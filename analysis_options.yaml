@@ -2,6 +2,8 @@ include:
   - package:very_good_analysis/analysis_options.yaml
   - package:bloc_lint/recommended.yaml
 analyzer:
+  errors:
+    one_member_abstracts: ignore
   exclude:
     - lib/l10n/gen/*
 linter:
