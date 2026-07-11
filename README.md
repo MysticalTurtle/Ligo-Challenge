@@ -108,7 +108,6 @@ $ flutter run --flavor staging --target lib/main_staging.dart
 $ flutter run --flavor production --target lib/main_production.dart
 ```
 
-_\*Ligo Challenge funciona en iOS, Android, Web y Windows._
 
 ---
 

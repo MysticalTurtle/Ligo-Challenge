@@ -246,17 +246,15 @@ void main() {
           const MovementItem(movement: incomingMovement),
         );
 
-        // Find the Container that holds the status badge
         final containers = tester.widgetList<Container>(find.byType(Container));
 
-        // Find the status badge container (the one with the status text as child)
         final statusBadge = containers.firstWhere((container) {
           final decoration = container.decoration as BoxDecoration?;
           return decoration?.color == Colors.green[50];
         });
 
-        final decoration = statusBadge.decoration as BoxDecoration;
-        expect(decoration.color, Colors.green[50]);
+        final decoration = statusBadge.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.green[50]);
       });
 
       testWidgets('status badge has correct background color for pending', (
@@ -275,8 +273,8 @@ void main() {
           return decoration?.color == Colors.orange[50];
         });
 
-        final decoration = statusBadge.decoration as BoxDecoration;
-        expect(decoration.color, Colors.orange[50]);
+        final decoration = statusBadge.decoration as BoxDecoration?;
+        expect(decoration?.color, Colors.orange[50]);
       });
     });
 

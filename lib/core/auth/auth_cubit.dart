@@ -25,4 +25,5 @@ class AuthCubit extends Cubit<AuthState> {
   void updateAuthState({required bool isAuthenticated, User? user}) {
     emit(AuthState(isAuthenticated: isAuthenticated, user: user));
   }
+  
 }

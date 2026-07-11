@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ligo_challenge/core/auth/auth_cubit.dart';
 import 'package:ligo_challenge/core/routing/app_routes.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
 import 'package:ligo_challenge/features/auth/domain/usecases/login_usecase.dart';
@@ -35,106 +36,115 @@ class _ProfileView extends StatelessWidget {
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
       ),
-      body: BlocBuilder<LoginCubit, LoginState>(
-        builder: (context, state) {
-          final user = state.user;
-
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                const SizedBox(height: 32),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
-                  child: Icon(
-                    Icons.person,
-                    size: 60,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Mis Datos',
-                          style: Theme.of(context).textTheme.titleLarge
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                        const SizedBox(height: 16),
-                        _InfoRow(
-                          icon: Icons.person_outline,
-                          label: 'Nombre',
-                          value: user?.name ?? 'No disponible',
-                        ),
-                        const SizedBox(height: 12),
-                        _InfoRow(
-                          icon: Icons.badge_outlined,
-                          label: 'ID de Usuario',
-                          value: user?.id ?? 'No disponible',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const Spacer(),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Cerrar sesión'),
-                          content: const Text(
-                            '¿Estás seguro de que deseas cerrar sesión?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: const Text('Cancelar'),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              child: const Text('Cerrar sesión'),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirm == true && context.mounted) {
-                        await context.read<LoginCubit>().logout();
-                        if (context.mounted) {
-                          context.go(AppRoutes.login);
-                        }
-                      }
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text('Cerrar sesión'),
-                    ),
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                      foregroundColor: Theme.of(context).colorScheme.onError,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
-          );
+      body: BlocListener<LoginCubit, LoginState>(
+        listener: (context, state) {
+          if (state.status == LoginStatus.loggedOut) {
+            context.read<AuthCubit>().updateAuthState(
+              isAuthenticated: false,
+            );
+          }
         },
+        child: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            final user = state.user;
+
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  const SizedBox(height: 32),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer,
+                    child: Icon(
+                      Icons.person,
+                      size: 60,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mis Datos',
+                            style: Theme.of(context).textTheme.titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          const SizedBox(height: 16),
+                          _InfoRow(
+                            icon: Icons.person_outline,
+                            label: 'Nombre',
+                            value: user?.name ?? 'No disponible',
+                          ),
+                          const SizedBox(height: 12),
+                          _InfoRow(
+                            icon: Icons.badge_outlined,
+                            label: 'ID de Usuario',
+                            value: user?.id ?? 'No disponible',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Cerrar sesión'),
+                            content: const Text(
+                              '¿Estás seguro de que deseas cerrar sesión?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancelar'),
+                              ),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('Cerrar sesión'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirm == true && context.mounted) {
+                          await context.read<LoginCubit>().logout();
+                          if (context.mounted) {
+                            context.go(AppRoutes.login);
+                          }
+                        }
+                      },
+                      icon: const Icon(Icons.logout),
+                      label: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Text('Cerrar sesión'),
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.error,
+                        foregroundColor: Theme.of(context).colorScheme.onError,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

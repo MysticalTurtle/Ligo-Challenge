@@ -45,13 +45,14 @@ android {
                 keyAlias = System.getenv("ANDROID_KEYSTORE_ALIAS")
                 keyPassword = System.getenv("ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
                 storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-                
-            } else {
+            } else if (keystorePropertiesFile.exists() && keystoreProperties["storeFile"] != null) {
                 keyAlias = keystoreProperties["keyAlias"] as String?
                 keyPassword = keystoreProperties["keyPassword"] as String?
                 storeFile = keystoreProperties["storeFile"]?.let { file(it) }
                 storePassword = keystoreProperties["storePassword"] as String?
             }
+            // If no keystore is configured, this signing config will be empty
+            // and we'll fall back to debug signing in the buildTypes section
         }
     }
 
@@ -76,7 +77,13 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            // Use release signing if keystore is configured, otherwise fall back to debug
+            val releaseConfig = signingConfigs.getByName("release")
+            signingConfig = if (releaseConfig.storeFile != null) {
+                releaseConfig
+            } else {
+                signingConfigs.getByName("debug")
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),

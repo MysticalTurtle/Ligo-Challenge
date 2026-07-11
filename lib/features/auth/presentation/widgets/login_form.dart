@@ -39,13 +39,18 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Lottie.asset(
-            'assets/lottie/profile_icon.json',
-            height: 200,
-            width: 200,
-            fit: BoxFit.contain,
+          ColorFiltered(
+            colorFilter: ColorFilter.mode(
+              Theme.of(context).colorScheme.primary,
+              BlendMode.srcATop,
+            ),
+            child: Lottie.asset(
+              'assets/lottie/profile_icon.json',
+              height: 200,
+              width: 200,
+              fit: BoxFit.contain,
+            ),
           ),
-
           Text(
             'Bienvenido',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(

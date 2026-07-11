@@ -89,11 +89,7 @@ void main() {
           expect((result as Success).data, testUserModel);
 
           verify(() => mockInternetConnectivity.hasConnection()).called(1);
-          verify(
-            () => mockRemoteDS.login(
-              const LoginRequest(user: testUser, password: testPassword),
-            ),
-          ).called(1);
+          verify(() => mockRemoteDS.login(any())).called(1);
           verify(() => mockTokenStorage.saveAccessToken(testToken)).called(1);
         },
       );

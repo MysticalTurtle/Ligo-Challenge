@@ -36,7 +36,7 @@ class LoginView extends StatelessWidget {
             );
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Bienvenido, ${state.user!.name}!'),
+                content: Text('Bienvenido!, ${state.user!.name}!'),
                 backgroundColor: Theme.of(context).colorScheme.primary,
               ),
             );

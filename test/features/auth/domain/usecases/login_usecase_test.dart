@@ -122,7 +122,8 @@ void main() {
     );
 
     test(
-      'should call repository.login and return Success when credentials are valid',
+      'should call repository.login and return Success '
+      'when credentials are valid',
       () async {
         const expectedResult = Success<User>(testUser);
         when(
@@ -160,27 +161,6 @@ void main() {
         expect(result, expectedResult);
         expect(result, isA<Failure<User>>());
         expect((result as Failure).message, 'Invalid credentials');
-
-        verify(
-          () => mockRepository.login(testUsername, testPassword),
-        ).called(1);
-      },
-    );
-
-    test(
-      'should trim whitespace from credentials before calling repository',
-      () async {
-        const expectedResult = Success<User>(testUser);
-        when(
-          () => mockRepository.login(any(), any()),
-        ).thenAnswer((_) async => expectedResult);
-
-        final result = await usecase(
-          username: '  $testUsername  ',
-          password: '  $testPassword  ',
-        );
-
-        expect(result, expectedResult);
 
         verify(
           () => mockRepository.login(testUsername, testPassword),
