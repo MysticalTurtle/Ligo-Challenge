@@ -13,7 +13,6 @@ class MovementDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isIncoming = movement.type.isIncoming;
     final isCompleted = movement.status == MovementStatus.completed;
 
     return Scaffold(
@@ -32,22 +31,23 @@ class MovementDetailPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(
-                      isIncoming ? Icons.arrow_downward : Icons.arrow_upward,
+                      movement.type.icon,
                       size: 64,
-                      color: isIncoming ? Colors.green : Colors.red,
+                      color: movement.type.color,
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '${isIncoming ? '+' : '-'}\$${movement.amount.toStringAsFixed(2)}',
+                      '${movement.type.symbol}\$'
+                      '${movement.amount.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.displayMedium
                           ?.copyWith(
-                            color: isIncoming ? Colors.green : Colors.red,
+                            color: movement.type.color,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      movement.type.isIncoming ? 'Ingreso' : 'Salida',
+                      movement.type.name,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: Colors.grey[600],
                       ),
@@ -57,20 +57,17 @@ class MovementDetailPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _buildDetailRow(
-              context,
+            _DetailRow(
               label: 'Descripción',
               value: movement.description,
             ),
             const Divider(height: 32),
-            _buildDetailRow(
-              context,
+            _DetailRow(
               label: 'ID de Transacción',
               value: movement.id,
             ),
             const Divider(height: 32),
-            _buildDetailRow(
-              context,
+            _DetailRow(
               label: 'Estado',
               value: movement.status.value,
               valueWidget: Container(
@@ -96,13 +93,21 @@ class MovementDetailPage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildDetailRow(
-    BuildContext context, {
-    required String label,
-    required String value,
-    Widget? valueWidget,
-  }) {
+class _DetailRow extends StatelessWidget {
+  const _DetailRow({
+    required this.label,
+    required this.value,
+    this.valueWidget,
+  });
+
+  final String label;
+  final String value;
+  final Widget? valueWidget;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

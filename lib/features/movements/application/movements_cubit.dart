@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:ligo_challenge/core/utils/result.dart';
-import 'package:ligo_challenge/features/movements/application/movements_state.dart';
+import 'package:ligo_challenge/features/movements/domain/entities/movement.dart';
 import 'package:ligo_challenge/features/movements/domain/entities/movement_type.dart';
 import 'package:ligo_challenge/features/movements/domain/usecases/get_movements_usecase.dart';
+
+part 'movements_state.dart';
 
 class MovementsCubit extends Cubit<MovementsState> {
   MovementsCubit({
@@ -11,19 +16,32 @@ class MovementsCubit extends Cubit<MovementsState> {
 
   final GetMovementsUsecase _getMovementsUsecase;
 
+  void changeFilter(MovementType? type) {
+    unawaited(getMovements(type: type, searchQuery: state.searchQuery));
+  }
+
+  void submitSearch(String query) {
+    unawaited(
+      getMovements(
+        searchQuery: query,
+        type: state.currentFilter,
+      ),
+    );
+  }
+
+  void clearSearch() {
+    unawaited(getMovements(type: state.currentFilter));
+  }
+
   Future<void> getMovements({
     MovementType? type,
     String? searchQuery,
-    bool clearFilterOnSearch = false,
   }) async {
     emit(
       state.copyWith(
         status: MovementsStatus.loading,
-        currentFilter: type,
-        clearFilter: type == null || clearFilterOnSearch,
-        searchQuery: searchQuery,
-        clearSearch:
-            searchQuery == null && state.searchQuery != null && type != null,
+        currentFilter: () => type,
+        searchQuery: () => searchQuery,
       ),
     );
 

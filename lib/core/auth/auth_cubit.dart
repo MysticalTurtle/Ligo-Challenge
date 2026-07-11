@@ -2,20 +2,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ligo_challenge/features/auth/domain/entities/user.dart';
 import 'package:ligo_challenge/features/auth/domain/repositories/auth_repository.dart';
 
-class AuthState extends Equatable {
-  const AuthState({this.isAuthenticated = false});
-
-  final bool isAuthenticated;
-
-  AuthState copyWith({bool? isAuthenticated}) {
-    return AuthState(isAuthenticated: isAuthenticated ?? this.isAuthenticated);
-  }
-
-  @override
-  List<Object?> get props => [isAuthenticated];
-}
+part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({required this._authRepository}) : super(const AuthState());
@@ -32,7 +22,7 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthState(isAuthenticated: isAuthenticated));
   }
 
-  void updateAuthState({required bool isAuthenticated}) {
-    emit(AuthState(isAuthenticated: isAuthenticated));
+  void updateAuthState({required bool isAuthenticated, User? user}) {
+    emit(AuthState(isAuthenticated: isAuthenticated, user: user));
   }
 }

@@ -1,10 +1,19 @@
-enum MovementType {
-  incoming('in'),
-  outgoing('out');
+import 'package:flutter/material.dart';
 
-  const MovementType(this.value);
+enum MovementType {
+  incoming('in', 'Ingresos'),
+  outgoing('out', 'Salidas');
+
+  const MovementType(this.value, this.name);
 
   final String value;
+  final String name;
+
+  IconData get icon => isIncoming ? Icons.arrow_downward : Icons.arrow_upward;
+  Color get color => isIncoming ? Colors.green : Colors.red;
+  Color get backgroundColor =>
+      isIncoming ? Colors.green[100]! : Colors.red[100]!;
+  String get symbol => isIncoming ? '+' : '-';
 
   static MovementType fromString(String value) {
     return MovementType.values.firstWhere(

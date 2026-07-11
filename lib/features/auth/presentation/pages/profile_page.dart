@@ -3,16 +3,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ligo_challenge/core/routing/app_routes.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
-import 'package:ligo_challenge/features/auth/application/login_state.dart';
+import 'package:ligo_challenge/features/auth/domain/usecases/login_usecase.dart';
+import 'package:ligo_challenge/features/auth/domain/usecases/logout_usecase.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => LoginCubit(
+        loginUsecase: context.read<LoginUsecase>(),
+        logoutUsecase: context.read<LogoutUsecase>(),
+      ),
+      child: const _ProfileView(),
+    );
+  }
+}
+
+class _ProfileView extends StatelessWidget {
+  const _ProfileView();
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(
+          'Mi Perfil',
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
       ),
       body: BlocBuilder<LoginCubit, LoginState>(
         builder: (context, state) {
@@ -74,18 +95,18 @@ class ProfilePage extends StatelessWidget {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Logout'),
+                          title: const Text('Cerrar sesión'),
                           content: const Text(
-                            'Are you sure you want to logout?',
+                            '¿Estás seguro de que deseas cerrar sesión?',
                           ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.pop(context, false),
-                              child: const Text('Cancel'),
+                              child: const Text('Cancelar'),
                             ),
                             FilledButton(
                               onPressed: () => Navigator.pop(context, true),
-                              child: const Text('Logout'),
+                              child: const Text('Cerrar sesión'),
                             ),
                           ],
                         ),
@@ -101,7 +122,7 @@ class ProfilePage extends StatelessWidget {
                     icon: const Icon(Icons.logout),
                     label: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 16),
-                      child: Text('Logout'),
+                      child: Text('Cerrar sesión'),
                     ),
                     style: FilledButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.error,

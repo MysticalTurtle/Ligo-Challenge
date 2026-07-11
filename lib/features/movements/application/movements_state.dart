@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:ligo_challenge/features/movements/domain/entities/movement.dart';
-import 'package:ligo_challenge/features/movements/domain/entities/movement_type.dart';
+part of 'movements_cubit.dart';
 
 enum MovementsStatus { initial, loading, success, error }
 
@@ -23,17 +21,17 @@ class MovementsState extends Equatable {
     MovementsStatus? status,
     List<Movement>? movements,
     String? error,
-    MovementType? currentFilter,
-    String? searchQuery,
-    bool clearFilter = false,
-    bool clearSearch = false,
+    MovementType? Function()? currentFilter,
+    String? Function()? searchQuery,
   }) {
     return MovementsState(
       status: status ?? this.status,
       movements: movements ?? this.movements,
       error: error ?? this.error,
-      currentFilter: clearFilter ? null : (currentFilter ?? this.currentFilter),
-      searchQuery: clearSearch ? null : (searchQuery ?? this.searchQuery),
+      currentFilter: currentFilter != null
+          ? currentFilter()
+          : this.currentFilter,
+      searchQuery: searchQuery != null ? searchQuery() : this.searchQuery,
     );
   }
 

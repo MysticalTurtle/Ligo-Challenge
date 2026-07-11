@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:ligo_challenge/core/routing/app_routes.dart';
 import 'package:ligo_challenge/features/movements/domain/entities/movement.dart';
 import 'package:ligo_challenge/features/movements/domain/entities/movement_status.dart';
-import 'package:ligo_challenge/features/movements/domain/entities/movement_type.dart';
 
 /// Widget to display a single movement item
 class MovementItem extends StatelessWidget {
@@ -18,7 +17,6 @@ class MovementItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isIncoming = movement.type.isIncoming;
     final isCompleted = movement.status == MovementStatus.completed;
 
     return Card(
@@ -33,12 +31,10 @@ class MovementItem extends StatelessWidget {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundColor: isIncoming
-                    ? Colors.green[100]
-                    : Colors.red[100],
+                backgroundColor: movement.type.backgroundColor,
                 child: Icon(
-                  isIncoming ? Icons.arrow_downward : Icons.arrow_upward,
-                  color: isIncoming ? Colors.green : Colors.red,
+                  movement.type.icon,
+                  color: movement.type.color,
                 ),
               ),
               const SizedBox(width: 16),
@@ -89,9 +85,10 @@ class MovementItem extends StatelessWidget {
                 ),
               ),
               Text(
-                '${isIncoming ? '+' : '-'}\$${movement.amount.toStringAsFixed(2)}',
+                '${movement.type.symbol}\$'
+                '${movement.amount.toStringAsFixed(2)}',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: isIncoming ? Colors.green : Colors.red,
+                  color: movement.type.color,
                   fontWeight: FontWeight.bold,
                 ),
               ),

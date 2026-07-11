@@ -1,22 +1,7 @@
-import 'package:equatable/equatable.dart';
-import 'package:ligo_challenge/features/auth/domain/entities/user.dart';
+part of 'login_cubit.dart';
 
-/// Login status enum
-enum LoginStatus {
-  /// Initial state
-  initial,
+enum LoginStatus { initial, loading, success, error, loggedOut }
 
-  /// Loading state
-  loading,
-
-  /// Success state
-  success,
-
-  /// Error state
-  error,
-}
-
-/// Login state
 class LoginState extends Equatable {
   const LoginState({
     this.status = LoginStatus.initial,
@@ -28,7 +13,6 @@ class LoginState extends Equatable {
   final User? user;
   final String? error;
 
-  /// Create a copy with updated fields
   LoginState copyWith({
     LoginStatus? status,
     User? user,

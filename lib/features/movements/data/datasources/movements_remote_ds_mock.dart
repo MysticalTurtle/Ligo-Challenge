@@ -50,6 +50,41 @@ class MovementsRemoteDSMock implements MovementsRemoteDS {
         'type': 'out',
         'status': 'pending',
       },
+      {
+        'id': 'mov_006',
+        'description': 'Transferencia enviada',
+        'amount': 75.0,
+        'type': 'out',
+        'status': 'completed',
+      },
+      {
+        'id': 'mov_007',
+        'description': 'Pago de suscripción',
+        'amount': 9.99,
+        'type': 'out',
+        'status': 'completed',
+      },
+      {
+        'id': 'mov_008',
+        'description': 'Depósito por nómina',
+        'amount': 1200.0,
+        'type': 'in',
+        'status': 'completed',
+      },
+      {
+        'id': 'mov_009',
+        'description': 'Compra en línea',
+        'amount': 59.95,
+        'type': 'out',
+        'status': 'completed',
+      },
+      {
+        'id': 'mov_010',
+        'description': 'Transferencia recibida de amigo',
+        'amount': 100.0,
+        'type': 'in',
+        'status': 'completed',
+      },
     ];
 
     var movements = mockResponse.map(MovementModel.fromJson).toList();

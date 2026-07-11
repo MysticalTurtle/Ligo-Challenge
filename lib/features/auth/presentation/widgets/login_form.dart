@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
-import 'package:ligo_challenge/features/auth/application/login_state.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -22,9 +21,9 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void _onSubmit() {
+  Future<void> _onSubmit() async {
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<LoginCubit>().login(
+      await context.read<LoginCubit>().login(
         _documentController.text,
         _passwordController.text,
       );
@@ -98,8 +97,8 @@ class _LoginFormState extends State<LoginForm> {
             onFieldSubmitted: (_) => _onSubmit(),
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
             validator: (value) {
-              if (value == null || value.length < 6) {
-                return 'Ingrese una contraseña válida de al menos 6 caracteres';
+              if (value == null || value.isEmpty) {
+                return 'Ingrese una contraseña';
               }
               return null;
             },
@@ -122,7 +121,7 @@ class _LoginFormState extends State<LoginForm> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text('Login'),
+                      : const Text('Iniciar Sesión'),
                 ),
               );
             },
