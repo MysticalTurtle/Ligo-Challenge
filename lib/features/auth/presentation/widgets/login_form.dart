@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -38,12 +39,12 @@ class _LoginFormState extends State<LoginForm> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Icon(
-            Icons.lock_outline,
-            size: 80,
-            color: Theme.of(context).colorScheme.primary,
+          Lottie.asset(
+            'assets/lottie/profile_icon.json',
+            height: 200,
+            width: 200,
+            fit: BoxFit.contain,
           ),
-          const SizedBox(height: 32),
 
           Text(
             'Bienvenido',

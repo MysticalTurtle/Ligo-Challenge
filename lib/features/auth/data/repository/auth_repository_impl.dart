@@ -58,7 +58,6 @@ class AuthRepositoryImpl implements AuthRepository {
     return tokenStorage.getAccessToken();
   }
 
-
   @override
   Future<bool> isAuthenticated() async {
     return tokenStorage.hasTokens();

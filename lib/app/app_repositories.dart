@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ligo_challenge/core/network/connectivity/internet_connectivity.dart';
 import 'package:ligo_challenge/core/network/connectivity/internet_connectivity_impl.dart';
 import 'package:ligo_challenge/core/network/dio_client.dart';
 import 'package:ligo_challenge/core/storage/token_storage.dart';
@@ -21,6 +22,9 @@ class AppRepositories extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
+        RepositoryProvider<InternetConnectivity>(
+          create: (context) => InternetConnectivityImpl(),
+        ),
         RepositoryProvider<TokenStorage>(
           create: (context) => TokenStorage(),
         ),
@@ -29,21 +33,27 @@ class AppRepositories extends StatelessWidget {
             baseUrl: '',
           ),
         ),
+        RepositoryProvider<AuthRemoteDS>(
+          create: (context) => AuthRemoteDSMock(
+            dio: context.read<DioClient>().dio,
+          ),
+        ),
+        RepositoryProvider<MovementsRemoteDS>(
+          create: (context) => MovementsRemoteDSMock(
+            dio: context.read<DioClient>().dio,
+          ),
+        ),
         RepositoryProvider<AuthRepository>(
           create: (context) => AuthRepositoryImpl(
-            datasource: AuthRemoteDSMock(
-              dio: context.read<DioClient>().dio,
-            ),
+            datasource: context.read<AuthRemoteDS>(),
             tokenStorage: context.read<TokenStorage>(),
-            internetConnectivity: InternetConnectivityImpl(),
+            internetConnectivity: context.read<InternetConnectivity>(),
           ),
         ),
         RepositoryProvider<MovementsRepository>(
           create: (context) => MovementsRepositoryImpl(
-            datasource: MovementsRemoteDSMock(
-              dio: context.read<DioClient>().dio,
-            ),
-            internetConnectivity: InternetConnectivityImpl(),
+            datasource: context.read<MovementsRemoteDS>(),
+            internetConnectivity: context.read<InternetConnectivity>(),
           ),
         ),
         RepositoryProvider<LoginUsecase>(

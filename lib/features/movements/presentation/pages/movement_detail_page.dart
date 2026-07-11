@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ligo_challenge/features/movements/domain/entities/movement.dart';
 import 'package:ligo_challenge/features/movements/domain/entities/movement_status.dart';
-import 'package:ligo_challenge/features/movements/domain/entities/movement_type.dart';
 
 class MovementDetailPage extends StatelessWidget {
   const MovementDetailPage({

@@ -12,7 +12,7 @@ class AppSearchBar extends StatefulWidget {
 }
 
 class _AppSearchBarState extends State<AppSearchBar> {
-    final _searchController = TextEditingController();
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -25,8 +25,6 @@ class _AppSearchBarState extends State<AppSearchBar> {
     _searchController.dispose();
     super.dispose();
   }
-
-
 
   void _onSearchSubmitted(String query) {
     if (query.trim().isEmpty) {
