@@ -20,11 +20,16 @@ class _SplashPageState extends State<SplashPage>
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
+  bool _hasInitialized = false;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _authCubit = context.read<AuthCubit>();
+    if (!_hasInitialized) {
+      _authCubit = context.read<AuthCubit>();
+      _hasInitialized = true;
+      unawaited(_checkAuthStatus());
+    }
   }
 
   @override
@@ -50,7 +55,6 @@ class _SplashPageState extends State<SplashPage>
     );
 
     unawaited(_animationController.forward());
-    unawaited(_checkAuthStatus());
   }
 
   @override
@@ -60,7 +64,10 @@ class _SplashPageState extends State<SplashPage>
   }
 
   Future<void> _checkAuthStatus() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1500));
+    await Future.wait([
+      _authCubit.init(),
+      Future<void>.delayed(const Duration(seconds: 2)),
+    ]);
 
     if (!mounted) return;
 
@@ -179,7 +186,7 @@ class _SplashPageState extends State<SplashPage>
                           const SizedBox(height: 12),
                           // Subtitle
                           Text(
-                            'Welcome back',
+                            'Bienvenido',
                             style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(
                                   color: Colors.white.withValues(alpha: 0.9),
@@ -187,17 +194,6 @@ class _SplashPageState extends State<SplashPage>
                                 ),
                           ),
                           const SizedBox(height: 60),
-                          // Loading indicator
-                          SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white.withValues(alpha: 0.8),
-                              ),
-                              strokeWidth: 3,
-                            ),
-                          ),
                         ],
                       ),
                     ),

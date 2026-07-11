@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ligo_challenge/app/app_repositories.dart';
@@ -16,13 +14,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppRepositories(
       child: BlocProvider<AuthCubit>(
-        create: (context) {
-          final cubit = AuthCubit(
-            authRepository: context.read<AuthRepository>(),
-          );
-          unawaited(cubit.init());
-          return cubit;
-        },
+        create: (context) => AuthCubit(
+          authRepository: context.read<AuthRepository>(),
+        ),
         child: const AppView(),
       ),
     );

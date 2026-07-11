@@ -6,6 +6,22 @@
 
 Este es el proyecto Ligo Challenge, desarrollado en Flutter con un enfoque en **Clean Architecture** y buenas prácticas de desarrollo.
 
+Este proyecto fue generado utilizando [Very Good CLI][very_good_cli_link], una herramienta de línea de comandos que permite crear proyectos Flutter con una estructura escalable y siguiendo las mejores prácticas.
+
+### Instalación de Very Good CLI 🛠️
+
+Para instalar Very Good CLI, ejecuta:
+
+```sh
+dart pub global activate very_good_cli
+```
+
+Verifica la instalación:
+
+```sh
+very_good --version
+```
+
 ---
 
 ## Estructura del Proyecto 📂
@@ -55,8 +71,9 @@ El proyecto cuenta con un **mock implementado** para el sistema de autenticació
 
 Para probar la validación y manejo de errores de red:
 
-1. Desactiva la conexión a internet de tu dispositivo/emulador
-2. Intenta iniciar sesión con las credenciales proporcionadas
+1. Inicia sesión y entra a la pantalla de movimientos
+1. Desactiva el internet
+2. Intenta recargar la página
 3. Aparecerá un mensaje de error por falta de conexión
 4. Presiona el botón **"Reintentar"** para volver a intentar la operación
 
@@ -119,7 +136,24 @@ Para ejecutar todas las pruebas unitarias y de widgets con cobertura de código,
 $ very_good test --coverage --test-randomize-ordering-seed random
 ```
 
-Para ver el reporte de cobertura generado, puedes utilizar [lcov](https://github.com/linux-test-project/lcov):
+Para ver el reporte de cobertura generado, puedes utilizar [lcov](https://github.com/linux-test-project/lcov).
+
+Primero necesitas instalar `lcov` para acceder al comando `genhtml`:
+
+En Windows:
+
+```sh
+sudo apt-get update
+sudo apt-get install lcov
+```
+
+En macOS:
+
+```sh
+brew install lcov
+```
+
+Luego, genera y abre el reporte:
 
 ```sh
 # Generar reporte HTML
