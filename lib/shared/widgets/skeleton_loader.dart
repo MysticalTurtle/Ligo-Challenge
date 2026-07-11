@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Skeleton loader for list items
 class SkeletonLoader extends StatefulWidget {
   const SkeletonLoader({
     super.key,
@@ -70,7 +69,6 @@ class _SkeletonLoaderState extends State<SkeletonLoader>
   }
 }
 
-/// Skeleton loader for a list item card
 class SkeletonListItem extends StatelessWidget {
   const SkeletonListItem({super.key});
 

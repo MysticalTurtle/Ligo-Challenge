@@ -6,11 +6,13 @@ import 'package:ligo_challenge/core/network/dio_client.dart';
 import 'package:ligo_challenge/core/routing/app_router.dart';
 import 'package:ligo_challenge/core/storage/token_storage.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
-import 'package:ligo_challenge/features/auth/data/datasources/auth_remote_ds_mock.dart';
-import 'package:ligo_challenge/features/auth/domain/repositories/auth_repository.dart';
-import 'package:ligo_challenge/features/auth/domain/usecases/login_usecase.dart';
-import 'package:ligo_challenge/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:ligo_challenge/features/auth/repository/auth_repository_impl.dart';
+import 'package:ligo_challenge/features/auth/data/data.dart';
+import 'package:ligo_challenge/features/auth/domain/domain.dart';
+import 'package:ligo_challenge/features/movements/application/movements_cubit.dart';
+import 'package:ligo_challenge/features/movements/data/datasources/movements_remote_ds_mock.dart';
+import 'package:ligo_challenge/features/movements/domain/repositories/movements_repository.dart';
+import 'package:ligo_challenge/features/movements/domain/usecases/get_movements_usecase.dart';
+import 'package:ligo_challenge/features/movements/repository/movements_repository_impl.dart';
 
 class App extends StatefulWidget {
   const App({
@@ -31,6 +33,8 @@ class _AppState extends State<App> {
   late final LoginUsecase _loginUsecase;
   late final LogoutUsecase _logoutUsecase;
   late final AuthCubit _authCubit;
+  late final MovementsRepository _movementsRepository;
+  late final GetMovementsUsecase _getMovementsUsecase;
   late final AppRouter _appRouter;
 
   @override
@@ -51,9 +55,17 @@ class _AppState extends State<App> {
       tokenStorage: _tokenStorage,
     );
 
+    final movementsDatasource = MovementsRemoteDSMock(dio: _dioClient.dio);
+    _movementsRepository = MovementsRepositoryImpl(
+      datasource: movementsDatasource,
+    );
+
     // Initialize use cases
     _loginUsecase = LoginUsecase(authRepository: _authRepository);
     _logoutUsecase = LogoutUsecase(authRepository: _authRepository);
+    _getMovementsUsecase = GetMovementsUsecase(
+      movementsRepository: _movementsRepository,
+    );
 
     // Initialize auth cubit
     _authCubit = AuthCubit(authRepository: _authRepository);
@@ -73,7 +85,7 @@ class _AppState extends State<App> {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: _authRepository),
-        // Add more repositories here as needed
+        RepositoryProvider.value(value: _movementsRepository),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -85,14 +97,17 @@ class _AppState extends State<App> {
               authCubit: _authCubit,
             ),
           ),
+          BlocProvider(
+            create: (context) => MovementsCubit(
+              getMovementsUsecase: _getMovementsUsecase,
+            ),
+          ),
         ],
         child: AuthenticatedUserListener(
           router: _appRouter.router,
           child: MaterialApp.router(
             theme: ThemeData(
-              appBarTheme: AppBarTheme(
-                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              ),
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
               useMaterial3: true,
             ),
             routerConfig: _appRouter.router,

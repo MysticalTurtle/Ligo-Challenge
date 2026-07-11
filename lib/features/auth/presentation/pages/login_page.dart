@@ -4,7 +4,6 @@ import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
 import 'package:ligo_challenge/features/auth/application/login_state.dart';
 import 'package:ligo_challenge/features/auth/presentation/widgets/login_form.dart';
 
-/// Login page
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
@@ -14,7 +13,6 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-/// Login view
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 

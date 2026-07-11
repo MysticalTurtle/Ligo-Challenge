@@ -6,7 +6,6 @@ import 'package:ligo_challenge/features/auth/data/models/login_request.dart';
 import 'package:ligo_challenge/features/auth/domain/entities/user.dart';
 import 'package:ligo_challenge/features/auth/domain/repositories/auth_repository.dart';
 
-/// Auth repository implementation
 class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({
     required this.datasource,
@@ -22,13 +21,11 @@ class AuthRepositoryImpl implements AuthRepository {
       final request = LoginRequest(user: user, password: password);
       final response = await datasource.login(request);
 
-      // Save tokens to secure storage
       await tokenStorage.saveAccessToken(response.token);
-      // In a real app, refresh token would be different
       await tokenStorage.saveRefreshToken(response.token);
 
       return Success(response.user);
-    } catch (e) {
+    } on Exception catch (e) {
       if (e is ApiException) {
         return Failure(e.message, e);
       }

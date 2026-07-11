@@ -5,7 +5,6 @@ import 'package:ligo_challenge/features/auth/application/login_state.dart';
 import 'package:ligo_challenge/features/auth/domain/usecases/login_usecase.dart';
 import 'package:ligo_challenge/features/auth/domain/usecases/logout_usecase.dart';
 
-/// Login cubit
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit({
     required this._loginUsecase,
@@ -17,7 +16,6 @@ class LoginCubit extends Cubit<LoginState> {
   final LogoutUsecase _logoutUsecase;
   final AuthCubit? _authCubit;
 
-  /// Login with token
   Future<void> login(String user, String password) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
@@ -32,10 +30,8 @@ class LoginCubit extends Cubit<LoginState> {
           state.copyWith(
             status: LoginStatus.success,
             user: result.data,
-            error: null,
           ),
         );
-        // Notify auth cubit of auth change
         _authCubit?.updateAuthState(isAuthenticated: true);
       case Failure():
         emit(
@@ -47,15 +43,12 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  /// Logout
   Future<void> logout() async {
     await _logoutUsecase();
-    // Notify auth cubit of auth change
     _authCubit?.updateAuthState(isAuthenticated: false);
     emit(const LoginState());
   }
 
-  /// Reset to initial state
   void reset() {
     emit(const LoginState());
   }

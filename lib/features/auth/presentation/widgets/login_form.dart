@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ligo_challenge/features/auth/application/login_cubit.dart';
 import 'package:ligo_challenge/features/auth/application/login_state.dart';
 
-/// Login form widget
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
 
@@ -13,12 +12,12 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  final _userController = TextEditingController();
+  final _documentController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _userController.dispose();
+    _documentController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -26,7 +25,7 @@ class _LoginFormState extends State<LoginForm> {
   void _onSubmit() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<LoginCubit>().login(
-        _userController.text,
+        _documentController.text,
         _passwordController.text,
       );
     }
@@ -34,14 +33,12 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    print('LoginForm: Building widget'); // Debugging line
     return Form(
       key: _formKey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // App logo or icon
           Icon(
             Icons.lock_outline,
             size: 80,
@@ -49,9 +46,8 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 32),
 
-          // Title
           Text(
-            'Welcome Back',
+            'Bienvenido',
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -59,7 +55,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Enter your credentials to continue',
+            'Inicia sesión con tu DNI y contraseña',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: Theme.of(
                 context,
@@ -69,52 +65,49 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 48),
 
-          // Username input field
           TextFormField(
-            controller: _userController,
+            controller: _documentController,
             decoration: const InputDecoration(
-              labelText: 'Username',
-              hintText: 'Enter your username',
+              labelText: 'DNI',
               prefixIcon: Icon(Icons.person),
               border: OutlineInputBorder(),
             ),
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Please enter your username';
+              if (value == null || value.length != 8) {
+                return 'Ingrese un DNI válido de 8 dígitos';
               }
               return null;
             },
+            maxLength: 8,
           ),
           const SizedBox(height: 16),
 
-          // Password input field
           TextFormField(
             controller: _passwordController,
             decoration: const InputDecoration(
-              labelText: 'Password',
-              hintText: 'Enter your password',
+              labelText: 'Contraseña',
               prefixIcon: Icon(Icons.lock),
               border: OutlineInputBorder(),
             ),
             obscureText: true,
-            keyboardType: TextInputType.text,
+            keyboardType: TextInputType.visiblePassword,
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (_) => _onSubmit(),
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             validator: (value) {
-              if (value == null || value.trim().isEmpty) {
-                return 'Please enter your password';
+              if (value == null || value.length < 6) {
+                return 'Ingrese una contraseña válida de al menos 6 caracteres';
               }
               return null;
             },
           ),
           const SizedBox(height: 24),
 
-          // Submit button
           BlocBuilder<LoginCubit, LoginState>(
             builder: (context, state) {
-              print('LoginForm: Current state: $state'); // Debugging line
               final isLoading = state.status == LoginStatus.loading;
 
               return FilledButton(

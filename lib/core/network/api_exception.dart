@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-/// Standardized API exception
 class ApiException implements Exception {
   ApiException({
     required this.message,

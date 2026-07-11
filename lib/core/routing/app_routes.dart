@@ -1,4 +1,3 @@
-/// App route paths and names
 class AppRoutes {
   AppRoutes._();
 
@@ -8,6 +7,13 @@ class AppRoutes {
   // Auth routes
   static const String login = '/login';
 
+  // Home shell route (root for authenticated pages)
+  static const String home = '/home';
+
   // Movements routes
-  static const String movements = '/movements';
+  static const String movements = '/home/movements';
+  static const String movementDetail = '/home/movements/detail';
+
+  // Profile route
+  static const String profile = '/home/profile';
 }

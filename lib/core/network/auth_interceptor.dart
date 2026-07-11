@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ligo_challenge/core/constants/api_constants.dart';
 import 'package:ligo_challenge/core/storage/token_storage.dart';
 
 /// Interceptor for adding JWT token and handling token refresh
@@ -30,16 +31,13 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    // Handle 401 (Unauthorized) by attempting token refresh
     if (err.response?.statusCode == 401) {
       try {
         final refreshToken = await tokenStorage.getRefreshToken();
         if (refreshToken != null && refreshToken.isNotEmpty) {
-          // Attempt to refresh token
           final newToken = await _refreshToken(refreshToken);
 
           if (newToken != null) {
-            // Retry the original request with new token
             final options = err.requestOptions;
             options.headers['Authorization'] = 'Bearer $newToken';
 
@@ -47,8 +45,7 @@ class AuthInterceptor extends Interceptor {
             return handler.resolve(response);
           }
         }
-      } catch (e, s) {
-        // If refresh fails, clear tokens and let error propagate
+      } on Exception catch (_) {
         await tokenStorage.clearTokens();
       }
     }
@@ -56,11 +53,10 @@ class AuthInterceptor extends Interceptor {
     handler.next(err);
   }
 
-  /// Attempt to refresh access token
   Future<String?> _refreshToken(String refreshToken) async {
     try {
       final response = await dio.post<Map<String, dynamic>>(
-        '/auth/refresh',
+        ApiConstants.refreshTokenEndpoint,
         data: {'refresh_token': refreshToken},
         options: Options(
           headers: {'Authorization': 'Bearer $refreshToken'},
@@ -74,8 +70,8 @@ class AuthInterceptor extends Interceptor {
           return newAccessToken;
         }
       }
-    } catch (_) {
-      // Refresh failed
+    } on Exception catch (_) {
+      return null;
     }
     return null;
   }

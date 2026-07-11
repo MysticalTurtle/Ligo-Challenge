@@ -9,7 +9,7 @@ class LoginUsecase {
   final AuthRepository _authRepository;
 
   /// Execute login
-  /// 
+  ///
   /// Takes [username] and [password] and attempts to authenticate the user.
   /// Returns [Result<User>] with user data on success or error message on failure.
   Future<Result<User>> call({

@@ -7,7 +7,7 @@ class LogoutUsecase {
   final AuthRepository _authRepository;
 
   /// Execute logout
-  /// 
+  ///
   /// Logs out the current user and clears stored tokens.
   Future<void> call() async {
     await _authRepository.logout();
